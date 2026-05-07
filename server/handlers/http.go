@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/charlesgiovanne/Katabi-Backend/server/models"
+	"github.com/charlesgiovanne/Katabi-Backend/server/store"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"github.com/pixelchat/server/models"
-	"github.com/pixelchat/server/store"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -27,7 +27,7 @@ var (
 // ── handler struct ────────────────────────────────────────────────────────────
 
 type Handlers struct {
-	store    *store.Store
+	store           *store.Store
 	hubBroadcastAll func(msgType string, data any)
 }
 

@@ -8,10 +8,10 @@ import (
 	"sync"
 	"time"
 
+	"github.com/charlesgiovanne/Katabi-Backend/server/models"
+	"github.com/charlesgiovanne/Katabi-Backend/server/store"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
-	"github.com/pixelchat/server/models"
-	"github.com/pixelchat/server/store"
 )
 
 // ── WebSocket tuning ──────────────────────────────────────────────────────────

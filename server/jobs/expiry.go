@@ -5,12 +5,12 @@ import (
 	"log"
 	"time"
 
-	"github.com/pixelchat/server/store"
+	"github.com/charlesgiovanne/Katabi-Backend/server/store"
 )
 
 const (
-	ExpiryMS       = int64(60 * 60 * 1000) // 1 hour in milliseconds
-	CheckInterval  = 60 * time.Second
+	ExpiryMS      = int64(60 * 60 * 1000) // 1 hour in milliseconds
+	CheckInterval = 60 * time.Second
 )
 
 // StartExpiryWorker launches a goroutine that periodically deletes inactive rooms
