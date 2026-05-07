@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/pixelchat/server/models"
+	"github.com/charlesgiovanne/Katabi-Backend/server/models"
 )
 
 // CreateRoom persists a new room. keywordHash is the bcrypt hash of the keyword.
