@@ -1,4 +1,4 @@
-module github.com/pixelchat/server
+module github.com/charlesgiovanne/Katabi-Backend
 
 go 1.22
 
