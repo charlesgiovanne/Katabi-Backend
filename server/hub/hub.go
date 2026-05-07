@@ -389,8 +389,9 @@ func (c *Client) handleMessage(raw []byte) {
 }
 
 func (c *Client) handleJoinRoom(ctx context.Context, roomID string) {
-	// Verify room exists
-	if _, err := c.hub.Store.GetRoom(ctx, roomID); err != nil {
+	// Verify room exists — capture the room so we can check creatorId below.
+	room, err := c.hub.Store.GetRoom(ctx, roomID)
+	if err != nil {
 		c.emit("ERROR", models.ErrorPayload{Code: "ROOM_NOT_FOUND", Message: "Room does not exist or has expired"})
 		return
 	}
@@ -401,8 +402,15 @@ func (c *Client) handleJoinRoom(ctx context.Context, roomID string) {
 		return
 	}
 
-	// System message
-	sysmsg := systemMessage(roomID, c.username+" JOINED THE ROOM")
+	// Creator gets a "CREATED THIS ROOM" message instead of the generic "JOINED" message.
+	// All other joiners get the standard "JOINED THE ROOM" message.
+	var sysmsgContent string
+	if room.CreatorID == c.userID {
+		sysmsgContent = c.username + " CREATED THIS ROOM"
+	} else {
+		sysmsgContent = c.username + " JOINED THE ROOM"
+	}
+	sysmsg := systemMessage(roomID, sysmsgContent)
 	_ = c.hub.Store.AddMessage(ctx, sysmsg)
 	c.hub.BroadcastRoom(roomID, "MESSAGE_SENT", sysmsg)
 

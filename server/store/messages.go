@@ -27,8 +27,11 @@ func (s *Store) AddMessage(ctx context.Context, msg *models.Message) error {
 // GetMessages returns up to limit messages for a room, newest-first when before is set.
 // Returns (messages oldest→newest, hasMore, error).
 func (s *Store) GetMessages(ctx context.Context, roomID string, limit int, before string) ([]*models.Message, bool, error) {
-	if limit <= 0 || limit > 100 {
+	if limit <= 0 {
 		limit = 50
+	}
+	if limit > 100 {
+		limit = 100
 	}
 
 	// Fetch all messages (list is capped at 500 so this is bounded)

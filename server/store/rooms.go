@@ -118,10 +118,11 @@ func (s *Store) GetExpiredRoomIDs(ctx context.Context, expiryMs int64) ([]string
 
 // CreateUser stores user data with a 24-hour TTL.
 func (s *Store) CreateUser(ctx context.Context, user *models.User) error {
-	return s.rdb.HSet(ctx, userKey(user.ID),
-		"id", user.ID,
-		"username", user.Username,
-	).Err()
+	pipe := s.rdb.Pipeline()
+	pipe.HSet(ctx, userKey(user.ID), "id", user.ID, "username", user.Username)
+	pipe.Expire(ctx, userKey(user.ID), 24*time.Hour)
+	_, err := pipe.Exec(ctx)
+	return err
 }
 
 // GetUser retrieves a user by ID.

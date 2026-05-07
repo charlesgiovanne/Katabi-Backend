@@ -152,15 +152,8 @@ func (h *Handlers) CreateRoom(w http.ResponseWriter, r *http.Request) {
 func (h *Handlers) ValidateKeyword(w http.ResponseWriter, r *http.Request) {
 	roomID := mux.Vars(r)["id"]
 
-	// Rate limit: 5 attempts per IP per room per 10 min
-	ip := realIP(r)
-	attempts, err := h.store.IncrValidateAttempts(r.Context(), ip, roomID)
-	if err == nil && attempts > 5 {
-		jsonOK(w, map[string]any{"valid": false, "locked": true}, http.StatusOK)
-		return
-	}
-
-	// Check room exists
+	// 1. Verify room exists before touching the rate-limit counter.
+	//    This prevents wasting attempts on phantom room IDs.
 	hash, err := h.store.GetRoomKeywordHash(r.Context(), roomID)
 	if err != nil {
 		jsonError(w, "ROOM_NOT_FOUND", "Room does not exist or has expired", http.StatusNotFound)
@@ -176,9 +169,22 @@ func (h *Handlers) ValidateKeyword(w http.ResponseWriter, r *http.Request) {
 	}
 
 	candidate := strings.ToUpper(strings.TrimSpace(body.Keyword))
-	err = bcrypt.CompareHashAndPassword([]byte(hash), []byte(candidate))
+	matchErr := bcrypt.CompareHashAndPassword([]byte(hash), []byte(candidate))
+	if matchErr == nil {
+		// Correct — don't count successful attempts against the limit.
+		jsonOK(w, map[string]any{"valid": true}, http.StatusOK)
+		return
+	}
 
-	jsonOK(w, map[string]any{"valid": err == nil}, http.StatusOK)
+	// 2. Wrong keyword — increment failed-attempt counter (rate limit: 5 per IP per room per 10 min).
+	ip := realIP(r)
+	attempts, _ := h.store.IncrValidateAttempts(r.Context(), ip, roomID)
+	if attempts > 5 {
+		jsonOK(w, map[string]any{"valid": false, "locked": true}, http.StatusOK)
+		return
+	}
+
+	jsonOK(w, map[string]any{"valid": false}, http.StatusOK)
 }
 
 // ── GET /api/rooms/{id}/messages ─────────────────────────────────────────────
