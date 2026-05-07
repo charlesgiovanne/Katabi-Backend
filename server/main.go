@@ -13,11 +13,11 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 
-	"github.com/pixelchat/server/config"
-	"github.com/pixelchat/server/handlers"
-	"github.com/pixelchat/server/hub"
-	"github.com/pixelchat/server/jobs"
-	"github.com/pixelchat/server/store"
+	"github.com/charlesgiovanne/Katabi-Backend/server/config"
+	"github.com/charlesgiovanne/Katabi-Backend/server/handlers"
+	"github.com/charlesgiovanne/Katabi-Backend/server/hub"
+	"github.com/charlesgiovanne/Katabi-Backend/server/jobs"
+	"github.com/charlesgiovanne/Katabi-Backend/server/store"
 )
 
 func main() {
@@ -43,11 +43,11 @@ func main() {
 	r := mux.NewRouter()
 
 	// REST endpoints
-	r.HandleFunc("/api/register",             api.Register).Methods(http.MethodPost)
-	r.HandleFunc("/api/rooms",                api.ListRooms).Methods(http.MethodGet)
-	r.HandleFunc("/api/rooms",                api.CreateRoom).Methods(http.MethodPost)
-	r.HandleFunc("/api/rooms/{id}/validate",  api.ValidateKeyword).Methods(http.MethodPost)
-	r.HandleFunc("/api/rooms/{id}/messages",  api.GetMessages).Methods(http.MethodGet)
+	r.HandleFunc("/api/register", api.Register).Methods(http.MethodPost)
+	r.HandleFunc("/api/rooms", api.ListRooms).Methods(http.MethodGet)
+	r.HandleFunc("/api/rooms", api.CreateRoom).Methods(http.MethodPost)
+	r.HandleFunc("/api/rooms/{id}/validate", api.ValidateKeyword).Methods(http.MethodPost)
+	r.HandleFunc("/api/rooms/{id}/messages", api.GetMessages).Methods(http.MethodGet)
 
 	// WebSocket endpoint
 	r.HandleFunc("/ws", h.ServeWS)

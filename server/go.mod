@@ -1,4 +1,4 @@
-module github.com/charlesgiovanne/Katabi-Backend
+module github.com/charlesgiovanne/Katabi-Backend/server
 
 go 1.22
 
