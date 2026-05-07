@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/pixelchat/server/models"
+	"github.com/charlesgiovanne/Katabi-Backend/server/models"
 )
 
 // AddMessage appends a message to the room's list, trims to MaxMessages, and refreshes TTL.
